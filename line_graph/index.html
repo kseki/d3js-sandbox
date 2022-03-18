@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Introduction</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <h1>D3.js</h1>
+    <div id="result"></div>
+    <script>
+      var data = [
+              {'publishedDate': '2017-01-07','rank': 14},
+              {'publishedDate': '2017-01-16','rank': 13},
+              {'publishedDate': '2017-01-23','rank': 7},
+              {'publishedDate': '2017-01-30','rank': 10},
+              {'publishedDate': '2017-02-06','rank': 6},
+              {'publishedDate': '2017-02-13','rank': 6},
+              {'publishedDate': '2017-02-20','rank': 4},
+              {'publishedDate': '2017-02-27','rank': 12},
+              {'publishedDate': '2017-03-06','rank': 18},
+              {'publishedDate': '2017-03-13','rank': 11},
+              {'publishedDate': '2017-03-18','rank': 5},
+              {'publishedDate': '2017-03-27','rank': 11},
+              {'publishedDate': '2017-04-03','rank': 9},
+              {'publishedDate': '2017-04-10','rank': 6},
+              {'publishedDate': '2017-04-17','rank': 8},
+              {'publishedDate': '2017-04-27','rank': 10},
+              {'publishedDate': '2017-05-08','rank': 9},
+              {'publishedDate': '2017-05-15','rank': 12},
+              {'publishedDate': '2017-05-22','rank': 14},
+              {'publishedDate': '2017-05-29','rank': 9},
+              {'publishedDate': '2017-06-05','rank': 10},
+              {'publishedDate': '2017-06-12','rank': 5},
+              {'publishedDate': '2017-06-19','rank': 14},
+              {'publishedDate': '2017-06-26','rank': 6},
+              {'publishedDate': '2017-07-03','rank': 4},
+              {'publishedDate': '2017-07-10','rank': 14},
+              {'publishedDate': '2017-07-15','rank': 6},
+              {'publishedDate': '2017-07-24','rank': 11},
+              {'publishedDate': '2017-07-31','rank': 12},
+              {'publishedDate': '2017-08-07','rank': 5},
+              {'publishedDate': '2017-08-21','rank': 10},
+              {'publishedDate': '2017-08-28','rank': 1},
+              {'publishedDate': '2017-09-04','rank': 13},
+              {'publishedDate': '2017-09-11','rank': 14},
+              {'publishedDate': '2017-09-18','rank': 14},
+              {'publishedDate': '2017-09-25','rank': 14},
+              {'publishedDate': '2017-10-02','rank': 14},
+              {'publishedDate': '2017-10-07','rank': 9},
+              {'publishedDate': '2017-10-16','rank': 14},
+              {'publishedDate': '2017-10-23','rank': 18},
+              {'publishedDate': '2017-10-30','rank': 7},
+              {'publishedDate': '2017-11-06','rank': 15},
+              {'publishedDate': '2017-11-13','rank': 19}
+            ];
+
+      var margin = {
+              top: 30,
+              right: 30,
+              bottom: 50,
+              left: 80
+            };
+      var size = {
+              width: 1000 - margin.left - margin.right,
+              height: 350 - margin.top - margin.bottom
+            }
+
+      // SVGを追加してから属性を足す順番
+      var svg = d3.select("body")
+        .append("svg")
+        .attr("width", size.width + margin.left + margin.right)
+        .attr("height", size.height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Y軸定義
+      var yScale = d3.scaleLinear()
+        .domain([1, 22])
+        .range([0, size.height])
+
+      // X軸定義
+      var xScale = d3.scaleTime()
+        .domain([new Date(data[0].publishedDate), new Date(data[data.length - 1].publishedDate)])
+        .range([0, size.width]);
+
+      // Y軸描画
+      svg.append("g")
+        .call(
+                d3.axisLeft(yScale)
+                .ticks(22)
+              )
+        .append("text")
+        .text("掲載順位")
+        .attr("stroke", "#000")
+        .attr("x", -30)
+        .attr("y", 0);
+
+      // X軸描画
+      svg.append("g")
+        .attr("transform", "translate(0," + size.height + ")")
+        .call(
+                d3.axisTop(xScale)
+                .tickFormat(d3.timeFormat("%m-%d"))
+              )
+        .append("text")
+        .text("期間")
+        .attr("x",size.width)
+        .attr("y",margin.bottom - 10);
+
+      // 折れ線グラフ描画関数（ラムダ）
+      var line = d3.line()
+        .x(function(d, i) { return xScale(new Date(d.publishedDate)); })
+        .y(function(d, i) { return yScale(d.rank); });
+
+      // 折れ線グラフの描画
+      svg.append("path")
+        .datum(data)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", "#000");
+    </script>
+  </body>
+</html>
